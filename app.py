@@ -63,6 +63,26 @@ def get_coin_categories():
 # 2) API to list all coin categories
 @app.route('/api/coin-categories', methods=['GET'])
 def list_coin_categories():
+    """
+    Fetch a list of all available coin categories
+    ---
+    responses:
+      200:
+        description: A list of coin categories
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example: 'decentralized-finance-defi'
+              name:
+                type: string
+                example: 'Decentralized Finance (DeFi)'
+      500:
+        description: Internal server error
+    """
     try:
         categories = get_coin_categories()
         return jsonify(categories), 200
