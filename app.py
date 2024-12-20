@@ -98,8 +98,12 @@ def get_coins_by_criteria(page=1, per_page=10, order="market_cap_desc"):
         'per_page': per_page,
         'page': page
     }
-    response = requests.get(url, params=params)
-    return response.json()
+    try:
+        url = f"https://api.coingecko.com/api/v3/coins/markets?vs_currency={params['vs_currency']}&order={params['order']}&per_page={params['per_page']}&page={params['page']}"
+        response = requests.get(url, params)  # Set a timeout
+        return response
+    except requests.exceptions.RequestException as e:
+        return {"error": str(e)}
 
 # 3) API to list coins according to criteria (e.g., based on market cap)
 @app.route('/api/coins/markets', methods=['GET'])
@@ -154,11 +158,13 @@ def list_coins_by_criteria():
     """
     try:
         # Get optional query parameters (page, per_page, and order)
+        # print(request.args)
         page = request.args.get('page', default=1, type=int)
         per_page = request.args.get('per_page', default=10, type=int)
+        
         order = request.args.get('order', default="market_cap_desc", type=str)
-
         coins = get_coins_by_criteria(page, per_page, order)
+        
         return jsonify(coins), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -170,7 +176,7 @@ def home():
 
 @app.route('/login', methods=['POST'])
 def login():
-    print('Login Called------->')
+    # print('Login Called------->')
     # Get username and password from the request
     username = request.json.get('username', None)
     password = request.json.get('password', None)
