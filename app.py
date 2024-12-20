@@ -104,6 +104,54 @@ def get_coins_by_criteria(page=1, per_page=10, order="market_cap_desc"):
 # 3) API to list coins according to criteria (e.g., based on market cap)
 @app.route('/api/coins/markets', methods=['GET'])
 def list_coins_by_criteria():
+    """
+    Fetch coins based on pagination, order, and other criteria
+    ---
+    parameters:
+      - name: page
+        in: query
+        type: integer
+        default: 1
+        description: The page number to retrieve (pagination).
+      - name: per_page
+        in: query
+        type: integer
+        default: 10
+        description: The number of coins to return per page.
+      - name: order
+        in: query
+        type: string
+        default: market_cap_desc
+        description: The order to sort coins by (e.g., market_cap_desc, volume_asc).
+    responses:
+      200:
+        description: A list of coins based on the specified criteria
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example: "bitcoin"
+              name:
+                type: string
+                example: "Bitcoin"
+              symbol:
+                type: string
+                example: "BTC"
+              current_price:
+                type: number
+                example: 30000.5
+              market_cap:
+                type: number
+                example: 600000000000
+              total_volume:
+                type: number
+                example: 5000000000
+      500:
+        description: Internal server error
+    """
     try:
         # Get optional query parameters (page, per_page, and order)
         page = request.args.get('page', default=1, type=int)
